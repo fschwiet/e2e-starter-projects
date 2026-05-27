@@ -23,6 +23,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+@Suppress("ktlint:standard:function-naming", "FunctionNaming")
 private fun Greeting() {
     Text(text = stringResource(id = R.string.hello_world))
 }

@@ -55,3 +55,19 @@ dependencies {
     androidTestImplementation(libs.compose.ui.test.junit4)
     debugImplementation(libs.compose.ui.test.manifest)
 }
+
+tasks.register("precommit") {
+    group = "verification"
+    description = "Run all checks then apply ktlint formatting."
+    dependsOn("check", "ktlintFormat")
+}
+
+tasks.named("ktlintFormat") {
+    mustRunAfter("check", "connectedAndroidTest")
+}
+
+tasks.register("precommitConnected") {
+    group = "verification"
+    description = "Run all checks, e2e tests, then apply ktlint formatting."
+    dependsOn("check", "connectedAndroidTest", "ktlintFormat")
+}
