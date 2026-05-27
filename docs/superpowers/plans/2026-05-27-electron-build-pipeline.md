@@ -54,7 +54,7 @@ dist/
 
 ```json
 {
-  "name": "jsonloserbaby",
+  "name": "new-application-name",
   "version": "0.0.1",
   "description": "Minimal Electron app",
   "main": "dist/main/main.js",
@@ -367,11 +367,11 @@ export default defineConfig({
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jsonloserbaby</title>
+    <title>new-application-name</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <h1 id="app-title">jsonloserbaby</h1>
+    <h1 id="app-title">new-application-name</h1>
     <script type="module" src="./index.ts"></script>
   </body>
 </html>
@@ -449,7 +449,7 @@ test('main window opens and shows app title', async () => {
   const window = await electronApp.firstWindow();
 
   await expect(window.locator('h1#app-title')).toBeVisible();
-  await expect(window).toHaveTitle('jsonloserbaby');
+  await expect(window).toHaveTitle('new-application-name');
 
   await electronApp.close();
 });
@@ -597,7 +597,7 @@ git commit -m "chore: add Prettier configuration and format all files"
 - [ ] **Step 1: Create `README.md`** with the following content:
 
 ````markdown
-# jsonloserbaby
+# new-application-name
 
 Minimal Electron app with TypeScript, ESLint, Prettier, Vitest unit tests, and Playwright E2E tests.
 
@@ -685,7 +685,7 @@ Expected output (all steps pass):
 - **test:unit fails:** check that `src/main/windowConfig.ts` exports `getWindowOptions` correctly
 - **lint fails:** address each ESLint error; re-run `pnpm lint` to confirm clean
 - **build fails:** check `tsc` and `vite build` output separately (`pnpm tsc -p tsconfig.main.json` then `pnpm vite build`)
-- **test:e2e fails:** ensure `dist/main/main.js` exists; check that `index.html` contains `<h1 id="app-title">` and `<title>jsonloserbaby</title>`
+- **test:e2e fails:** ensure `dist/main/main.js` exists; check that `index.html` contains `<h1 id="app-title">` and `<title>new-application-name</title>`
 - **format:check fails:** run `pnpm format`, then `git add -u`, then `pnpm format:check` again
 
 - [ ] **Step 3: Commit the clean state**

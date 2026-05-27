@@ -9,7 +9,7 @@ test('main window opens and shows app title', async () => {
   const window = await electronApp.firstWindow();
 
   await expect(window.locator('h1#app-title')).toBeVisible();
-  await expect(window).toHaveTitle('jsonloserbaby');
+  await expect(window).toHaveTitle('new-application-name');
 
   await electronApp.close();
 });

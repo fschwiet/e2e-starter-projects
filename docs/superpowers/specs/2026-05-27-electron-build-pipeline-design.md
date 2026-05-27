@@ -26,7 +26,7 @@ Set up a minimal, well-configured Electron desktop app using TypeScript, with a 
 ## Project Structure
 
 ```
-jsonloserbaby/
+new-application-name/
 ├── src/
 │   ├── main/
 │   │   ├── main.ts          # Entry point: creates BrowserWindow, loads renderer
