@@ -79,7 +79,8 @@ The `pnpm test` script runs all of the above in sequence.
 ```json
 {
   "scripts": {
-    "dev": "tsc -p tsconfig.main.json && vite",
+    "dev:renderer": "vite",
+    "dev:main": "tsc -p tsconfig.main.json",
     "build": "tsc -p tsconfig.main.json && vite build",
     "typecheck": "tsc -p tsconfig.main.json --noEmit && tsc -p tsconfig.renderer.json --noEmit",
     "test:unit": "vitest run",
@@ -91,6 +92,13 @@ The `pnpm test` script runs all of the above in sequence.
   }
 }
 ```
+
+**Development workflow** (no single `dev` script — kept simple and explicit):
+1. `pnpm dev:main` — compile main process once
+2. `pnpm dev:renderer` — start Vite dev server (`http://localhost:5173`)
+3. `npx electron .` — launch Electron
+
+`main.ts` detects dev vs. production via the `VITE_DEV_SERVER_URL` environment variable (set by Vite during `dev:renderer`): if present, load from that URL; otherwise load from `dist/renderer/index.html`.
 
 ---
 
