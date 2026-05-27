@@ -12,33 +12,34 @@
 
 ## File Map
 
-| File | Purpose |
-|------|---------|
-| `package.json` | Scripts, devDependencies, Electron `main` entry |
-| `.gitignore` | Ignore `dist/` and `node_modules/` |
-| `tsconfig.main.json` | tsc config for main process (CommonJS, `dist/main`) |
-| `tsconfig.renderer.json` | TypeScript config consumed by Vite (ESNext/bundler) |
-| `vite.config.ts` | Vite config — root `src/renderer`, output `dist/renderer` |
-| `vitest.config.ts` | Vitest config — Node environment, `tests/unit/**` |
-| `playwright.config.ts` | Playwright config — `tests/e2e/**`, no browsers |
-| `.eslintrc.cjs` | ESLint with `@typescript-eslint`, env overrides per directory |
-| `.prettierrc` | Prettier formatting options |
-| `.prettierignore` | Exclude `dist/` and `node_modules/` from formatting |
+| File                       | Purpose                                                                 |
+| -------------------------- | ----------------------------------------------------------------------- |
+| `package.json`             | Scripts, devDependencies, Electron `main` entry                         |
+| `.gitignore`               | Ignore `dist/` and `node_modules/`                                      |
+| `tsconfig.main.json`       | tsc config for main process (CommonJS, `dist/main`)                     |
+| `tsconfig.renderer.json`   | TypeScript config consumed by Vite (ESNext/bundler)                     |
+| `vite.config.ts`           | Vite config — root `src/renderer`, output `dist/renderer`               |
+| `vitest.config.ts`         | Vitest config — Node environment, `tests/unit/**`                       |
+| `playwright.config.ts`     | Playwright config — `tests/e2e/**`, no browsers                         |
+| `.eslintrc.cjs`            | ESLint with `@typescript-eslint`, env overrides per directory           |
+| `.prettierrc`              | Prettier formatting options                                             |
+| `.prettierignore`          | Exclude `dist/` and `node_modules/` from formatting                     |
 | `src/main/windowConfig.ts` | Pure utility: returns `BrowserWindowConstructorOptions` — unit-testable |
-| `src/main/main.ts` | Electron entry: creates window, loads renderer URL |
-| `src/main/preload.ts` | Preload: exposes `versions` via `contextBridge` |
-| `src/renderer/index.html` | HTML entry point with `#app-title` heading |
-| `src/renderer/index.ts` | Renderer entry point (minimal) |
-| `src/renderer/style.css` | Base styles |
-| `tests/unit/main.test.ts` | Vitest smoke test for `getWindowOptions` |
-| `tests/e2e/app.test.ts` | Playwright smoke test: window opens, heading visible |
-| `README.md` | Prerequisites, install, dev workflow, verification pipeline |
+| `src/main/main.ts`         | Electron entry: creates window, loads renderer URL                      |
+| `src/main/preload.ts`      | Preload: exposes `versions` via `contextBridge`                         |
+| `src/renderer/index.html`  | HTML entry point with `#app-title` heading                              |
+| `src/renderer/index.ts`    | Renderer entry point (minimal)                                          |
+| `src/renderer/style.css`   | Base styles                                                             |
+| `tests/unit/main.test.ts`  | Vitest smoke test for `getWindowOptions`                                |
+| `tests/e2e/app.test.ts`    | Playwright smoke test: window opens, heading visible                    |
+| `README.md`                | Prerequisites, install, dev workflow, verification pipeline             |
 
 ---
 
 ## Task 1: Repository Foundation
 
 **Files:**
+
 - Create: `package.json`
 - Create: `.gitignore`
 
@@ -76,6 +77,7 @@ dist/
 - [ ] **Step 3: Install all dependencies**
 
 Run:
+
 ```
 pnpm add -D electron typescript vite vitest @playwright/test @types/node eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-config-prettier prettier
 ```
@@ -94,6 +96,7 @@ git commit -m "chore: add package.json and install dependencies"
 ## Task 2: TypeScript Configuration
 
 **Files:**
+
 - Create: `tsconfig.main.json`
 - Create: `tsconfig.renderer.json`
 
@@ -136,6 +139,7 @@ git commit -m "chore: add package.json and install dependencies"
 - [ ] **Step 3: Verify configs parse correctly**
 
 Run:
+
 ```
 pnpm tsc -p tsconfig.main.json --noEmit --listFiles
 ```
@@ -143,6 +147,7 @@ pnpm tsc -p tsconfig.main.json --noEmit --listFiles
 Expected: tsc reports no source files found but exits without error (no syntax errors in config).
 
 Run:
+
 ```
 pnpm tsc -p tsconfig.renderer.json --noEmit --listFiles
 ```
@@ -161,6 +166,7 @@ git commit -m "chore: add TypeScript configurations for main and renderer"
 ## Task 3: Vitest + Unit Smoke Test (TDD)
 
 **Files:**
+
 - Create: `vitest.config.ts`
 - Create: `tests/unit/main.test.ts`
 - Create: `src/main/windowConfig.ts`
@@ -209,6 +215,7 @@ describe('getWindowOptions', () => {
 - [ ] **Step 3: Run the test — verify it fails**
 
 Run:
+
 ```
 pnpm test:unit
 ```
@@ -236,6 +243,7 @@ export function getWindowOptions(preloadPath: string): BrowserWindowConstructorO
 - [ ] **Step 5: Run the test — verify it passes**
 
 Run:
+
 ```
 pnpm test:unit
 ```
@@ -254,6 +262,7 @@ git commit -m "test: add Vitest config and unit smoke test for getWindowOptions"
 ## Task 4: Main Process Source
 
 **Files:**
+
 - Create: `src/main/main.ts`
 - Create: `src/main/preload.ts`
 
@@ -310,6 +319,7 @@ app.on('window-all-closed', () => {
 - [ ] **Step 3: Type-check main process**
 
 Run:
+
 ```
 pnpm tsc -p tsconfig.main.json --noEmit
 ```
@@ -328,6 +338,7 @@ git commit -m "feat: add main process entry point and preload script"
 ## Task 5: Renderer Source + Vite Config
 
 **Files:**
+
 - Create: `vite.config.ts`
 - Create: `src/renderer/index.html`
 - Create: `src/renderer/index.ts`
@@ -386,11 +397,13 @@ body {
 - [ ] **Step 5: Run the full build**
 
 Run:
+
 ```
 pnpm build
 ```
 
 Expected:
+
 - `dist/main/main.js`, `dist/main/preload.js`, `dist/main/windowConfig.js` are created
 - `dist/renderer/index.html` and bundled assets are created
 - No errors
@@ -407,6 +420,7 @@ git commit -m "feat: add renderer source and Vite config"
 ## Task 6: Playwright E2E Test
 
 **Files:**
+
 - Create: `playwright.config.ts`
 - Create: `tests/e2e/app.test.ts`
 
@@ -444,6 +458,7 @@ test('main window opens and shows app title', async () => {
 - [ ] **Step 3: Run E2E tests**
 
 Run:
+
 ```
 pnpm test:e2e
 ```
@@ -464,6 +479,7 @@ git commit -m "test: add Playwright E2E config and app smoke test"
 ## Task 7: ESLint Configuration
 
 **Files:**
+
 - Create: `.eslintrc.cjs`
 
 - [ ] **Step 1: Create `.eslintrc.cjs`**
@@ -473,11 +489,7 @@ module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'prettier',
-  ],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
   overrides: [
     {
       files: ['src/main/**/*', 'tests/unit/**/*', 'tests/e2e/**/*'],
@@ -501,11 +513,13 @@ module.exports = {
 - [ ] **Step 2: Run lint**
 
 Run:
+
 ```
 pnpm lint
 ```
 
 Expected: no errors. If any errors are reported, fix them before proceeding. Common issues:
+
 - `@typescript-eslint/no-unused-vars` — remove or prefix with `_` any unused variables
 - `@typescript-eslint/no-explicit-any` — replace `any` with a proper type
 
@@ -521,6 +535,7 @@ git commit -m "chore: add ESLint configuration"
 ## Task 8: Prettier Configuration
 
 **Files:**
+
 - Create: `.prettierrc`
 - Create: `.prettierignore`
 
@@ -544,6 +559,7 @@ pnpm-lock.yaml
 - [ ] **Step 3: Format all files**
 
 Run:
+
 ```
 pnpm format
 ```
@@ -553,6 +569,7 @@ Expected: Prettier rewrites any files that don't match the config. Review the di
 - [ ] **Step 4: Verify format check passes**
 
 Run:
+
 ```
 pnpm format:check
 ```
@@ -574,6 +591,7 @@ git commit -m "chore: add Prettier configuration and format all files"
 ## Task 9: README
 
 **Files:**
+
 - Create: `README.md`
 
 - [ ] **Step 1: Create `README.md`** with the following content:
@@ -615,14 +633,14 @@ Run these three steps in separate terminals (or sequentially):
 
 Run these commands in order to verify a change is correct:
 
-| Step | Command             | What it checks                                    |
-| ---- | ------------------- | ------------------------------------------------- |
-| 1    | `pnpm typecheck`    | TypeScript types (main + renderer, no emit)       |
-| 2    | `pnpm test:unit`    | Unit tests (Vitest)                               |
-| 3    | `pnpm lint`         | ESLint rules                                      |
-| 4    | `pnpm build`        | Production build (tsc + Vite)                     |
-| 5    | `pnpm test:e2e`     | End-to-end tests against built app (Playwright)   |
-| 6    | `pnpm format:check` | Prettier formatting                               |
+| Step | Command             | What it checks                                  |
+| ---- | ------------------- | ----------------------------------------------- |
+| 1    | `pnpm typecheck`    | TypeScript types (main + renderer, no emit)     |
+| 2    | `pnpm test:unit`    | Unit tests (Vitest)                             |
+| 3    | `pnpm lint`         | ESLint rules                                    |
+| 4    | `pnpm build`        | Production build (tsc + Vite)                   |
+| 5    | `pnpm test:e2e`     | End-to-end tests against built app (Playwright) |
+| 6    | `pnpm format:check` | Prettier formatting                             |
 
 Run the full pipeline in one command:
 
@@ -645,11 +663,13 @@ git commit -m "docs: add README with verification pipeline"
 - [ ] **Step 1: Run the complete verification pipeline**
 
 Run:
+
 ```
 pnpm test
 ```
 
 Expected output (all steps pass):
+
 ```
 > pnpm typecheck   ✓ (no errors)
 > pnpm test:unit   ✓ 3 tests passed
