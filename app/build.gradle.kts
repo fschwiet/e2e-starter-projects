@@ -71,3 +71,9 @@ tasks.register("precommitConnected") {
     description = "Run all checks, e2e tests, then apply ktlint formatting."
     dependsOn("check", "connectedAndroidTest", "ktlintFormat")
 }
+
+tasks.register("ci") {
+    group = "verification"
+    description = "Read-only verification pipeline for CI: all checks plus e2e tests, no formatting."
+    dependsOn("check", "connectedAndroidTest")
+}

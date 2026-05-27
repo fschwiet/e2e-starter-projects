@@ -46,6 +46,7 @@ Chained:
 ```bash
 ./gradlew precommit             # all checks, then apply formatting
 ./gradlew precommitConnected    # all checks, e2e tests, then apply formatting
+./gradlew ci                    # all checks + e2e tests, no formatting (used by GitHub Actions)
 ```
 
-`precommit` / `precommitConnected` **mutate source files** because they run `ktlintFormat` at the end. For a read-only CI pipeline, use `./gradlew check` instead — it already includes `ktlintCheck`, `detekt`, `lint`, and `test`.
+`precommit` / `precommitConnected` **mutate source files** because they run `ktlintFormat` at the end. `ci` is the read-only equivalent used in CI — it runs `check` (which includes `ktlintCheck`, `detekt`, `lint`, and `test`) plus `connectedAndroidTest`.
