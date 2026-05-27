@@ -1,7 +1,10 @@
+node_modules/
+
 .claude/settings.local.json
 
 .gradle/
-build/
+app/build/
+dist/
 .idea/
 local.properties
 *.iml
