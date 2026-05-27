@@ -7,6 +7,8 @@ Rename the project: search-and-replace `new-application-name` (folder/project) a
 ## Prerequisites
 
 - **Android Studio** with the Android SDK (compileSdk 35 / Android 15 installed).
+  - Run .\scripts\check-prerequisites.ps1 to verify environment variables have been set
+    - (JAVA_HOME, ANDROID_HOME, related path variables)
 - **JDK 17 or later** as the active JDK (`java -version`). Android Gradle Plugin 8.7 requires 17+; JDK 21 works.
 - **Connected device or emulator** with API level 24+, screen unlocked — only required for `precommitConnected` and `connectedAndroidTest`.
 
