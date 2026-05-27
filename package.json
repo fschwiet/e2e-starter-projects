@@ -1,0 +1,31 @@
+{
+  "name": "jsonloserbaby",
+  "version": "0.0.1",
+  "description": "Minimal Electron app",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "dev:renderer": "vite",
+    "dev:main": "tsc -p tsconfig.main.json",
+    "build": "tsc -p tsconfig.main.json && vite build",
+    "typecheck": "tsc -p tsconfig.main.json --noEmit && tsc -p tsconfig.renderer.json --noEmit",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "test": "pnpm typecheck && pnpm test:unit && pnpm lint && pnpm build && pnpm test:e2e && pnpm format:check",
+    "lint": "eslint src tests --ext .ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.1",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "electron": "^42.2.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.3",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.14",
+    "vitest": "^4.1.7"
+  }
+}
