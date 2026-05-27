@@ -33,7 +33,7 @@ Duplicate runs on a PR branch (one from `push`, one from `pull_request`) are acc
 
 1. `actions/checkout@v4` — check out the repo
 2. `pnpm/action-setup@v4` — install pnpm (version comes from the `packageManager` field in `package.json`)
-3. `actions/setup-node@v4` with Node.js 20 and `cache: pnpm` — installs Node and restores the pnpm store cache (ordering matters: pnpm must be on PATH before setup-node's cache hook runs)
+3. `actions/setup-node@v4` with Node.js 22 and `cache: pnpm` — installs Node and restores the pnpm store cache (ordering matters: pnpm must be on PATH before setup-node's cache hook runs)
 4. `pnpm install --frozen-lockfile` — install dependencies; fail if `pnpm-lock.yaml` is out of date rather than silently regenerating it
 5. `xvfb-run pnpm test` — run the full test suite inside a virtual display so Electron can open a window
 
@@ -68,4 +68,4 @@ No steps need to be split — the single `xvfb-run pnpm test` invocation covers 
 
 ## Node.js Version
 
-Node.js 20 (current LTS). The project does not specify an `engines` field, so LTS is a safe default.
+Node.js 22 (current LTS). Required by pnpm 11.3.0, which needs Node.js ≥ 22.13. The project does not specify an `engines` field; pinning to current LTS is a safe default.
