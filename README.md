@@ -17,15 +17,11 @@ pnpm install
 
 Run these three steps in separate terminals (or sequentially):
 
-1. Compile the main process:
+1. Compile the src/main process then run src/renderer with vite:
    ```
-   pnpm dev:main
+   pnpm dev
    ```
-2. Start the Vite dev server for the renderer:
-   ```
-   pnpm dev:renderer
-   ```
-3. Launch Electron:
+2. Launch Electron:
    ```
    npx electron .
    ```
