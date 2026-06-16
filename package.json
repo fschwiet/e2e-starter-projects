@@ -8,9 +8,17 @@
   },
   "packageManager": "pnpm@11.3.0",
   "repository": "https://github.com/your-org/new-application-name",
+  "bin": {
+    "hello-world": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "tsup",
     "typecheck": "tsc --noEmit",
     "test:unit": "vitest run",
+    "test:e2e": "vitest run --config vitest.e2e.config.ts",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
@@ -23,8 +31,10 @@
     "@types/node": "^25.9.3",
     "eslint": "^10.5.0",
     "eslint-config-prettier": "^10.1.8",
+    "execa": "^9.6.1",
     "globals": "^17.6.0",
     "prettier": "^3.8.4",
+    "tsup": "^8.5.1",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.1",
     "vitest": "^4.1.9"
