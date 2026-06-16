@@ -83,16 +83,20 @@ argv → commander → command handler → command function → stdout
 
 ## Verification pipeline
 
-`pnpm test` runs the full gate in order (mirrors the reference project):
+`pnpm test` runs the full gate in fail-fast order — cheapest, most-likely-to-trip
+static checks first, then unit tests, then the expensive build + e2e last:
 
 | Step | Command             | What it checks                          |
 | ---- | ------------------- | --------------------------------------- |
-| 1    | `pnpm typecheck`    | TypeScript types (no emit)              |
-| 2    | `pnpm test:unit`    | Unit tests (Vitest)                     |
-| 3    | `pnpm lint`         | ESLint rules                            |
-| 4    | `pnpm build`        | Production build (tsup)                 |
-| 5    | `pnpm test:e2e`     | End-to-end tests against the built CLI  |
-| 6    | `pnpm format:check` | Prettier formatting                     |
+| 1    | `pnpm format:check` | Prettier formatting (cheapest check)    |
+| 2    | `pnpm lint`         | ESLint rules                            |
+| 3    | `pnpm typecheck`    | TypeScript types (no emit)              |
+| 4    | `pnpm test:unit`    | Unit tests (Vitest; no build needed)    |
+| 5    | `pnpm build`        | Production build (tsup)                 |
+| 6    | `pnpm test:e2e`     | End-to-end tests against the built CLI  |
+
+The only hard ordering constraint is that `build` precedes `test:e2e` (e2e runs the
+built binary). The remaining steps are ordered fastest-first for quick feedback.
 
 ## CI
 
