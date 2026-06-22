@@ -10,7 +10,7 @@
     "typecheck": "tsc -p tsconfig.main.json --noEmit && tsc -p tsconfig.renderer.json --noEmit",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
-    "test": "pnpm typecheck && pnpm test:unit && pnpm lint && pnpm build && pnpm test:e2e && pnpm format:check",
+    "test": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test:unit && pnpm build && pnpm test:e2e",
     "lint": "eslint src tests",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

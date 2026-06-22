@@ -32,12 +32,12 @@ Run these commands in order to verify a change is correct:
 
 | Step | Command             | What it checks                                  |
 | ---- | ------------------- | ----------------------------------------------- |
-| 1    | `pnpm typecheck`    | TypeScript types (main + renderer, no emit)     |
-| 2    | `pnpm test:unit`    | Unit tests (Vitest)                             |
-| 3    | `pnpm lint`         | ESLint rules                                    |
-| 4    | `pnpm build`        | Production build (tsc + Vite)                   |
-| 5    | `pnpm test:e2e`     | End-to-end tests against built app (Playwright) |
-| 6    | `pnpm format:check` | Prettier formatting                             |
+| 1    | `pnpm format:check` | Prettier formatting                             |
+| 2    | `pnpm lint`         | ESLint rules                                    |
+| 3    | `pnpm typecheck`    | TypeScript types (main + renderer, no emit)     |
+| 4    | `pnpm test:unit`    | Unit tests (Vitest)                             |
+| 5    | `pnpm build`        | Production build (tsc + Vite)                   |
+| 6    | `pnpm test:e2e`     | End-to-end tests against built app (Playwright) |
 
 Run the full pipeline in one command:
 
