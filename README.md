@@ -26,12 +26,15 @@ Run these commands in order to verify a change is correct (fail-fast order):
 | 4    | `pnpm test:unit`    | Unit tests (Vitest)                     |
 | 5    | `pnpm build`        | Production build (tsup → `dist/cli.js`) |
 | 6    | `pnpm test:e2e`     | End-to-end tests against the built CLI  |
+| all  | `pnpm check`        | Runs steps 1-6 in order                 |
 
 Run the full pipeline in one command:
 
 ```
-pnpm test
+pnpm check
 ```
+
+`pnpm test` runs just the test steps (4-6): unit tests, build, and e2e tests.
 
 ## Install the local build globally
 
