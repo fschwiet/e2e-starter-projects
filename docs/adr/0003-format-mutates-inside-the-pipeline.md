@@ -19,5 +19,9 @@ violation — they have already been fixed.
 "Did the pipeline pass" and "is my working tree clean" become separate questions: a
 passing `check` can leave unstaged changes. This is acceptable because the pipeline is
 local-only — there is no CI (per the `npm-command` starter kit's most recent commit, which
-removed its workflow) that would need a non-mutating variant. Should CI be added later,
-skipping step 1 yields one, and the README says so.
+removed its workflow) that would need a non-mutating variant.
+
+Should CI be added later, formatting would still be verified rather than lost:
+`golangci-lint run` reports formatter violations as ordinary issues without rewriting
+files, so steps 2–5 alone are a complete read-only gate. `golangci-lint fmt --diff` is the
+alternative.

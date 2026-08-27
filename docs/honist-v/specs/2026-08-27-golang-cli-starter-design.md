@@ -30,8 +30,8 @@ never merge, a shared glossary belongs on `main` and is out of scope for this wo
 
 | Concern | Choice |
 | --- | --- |
-| Language | Go 1.26 |
-| CLI parsing | `spf13/cobra` |
+| Language | Go 1.26 (`go 1.26.7` directive in `go.mod`) |
+| CLI parsing | `spf13/cobra` v1.10.2 |
 | Lint | golangci-lint v2, pinned as a tool dependency in a dedicated modfile |
 | Format | gofumpt + goimports, run as golangci-lint v2 formatters |
 | Unit tests | stdlib `testing`, files alongside the code |
@@ -152,21 +152,29 @@ the main module for tool resolution.
 These are quirks confirmed empirically that an implementer will otherwise rediscover the
 hard way:
 
-1. **`go mod init -modfile=... <path>` does not work** in Go 1.26 — it fails with
-   `'go mod init' accepts at most one argument`, despite golangci-lint's documentation
-   presenting it as the setup step. Create `golangci-lint.mod` by hand (a `module` line
-   and a `go` line), then run `go get -tool -modfile=golangci-lint.mod <pkg>@<version>`.
-   This affects only the person building the starter kit; the file is committed, so
-   template users never run it.
-
-2. **Both `golangci-lint.mod` and `golangci-lint.sum` must be committed.** Without the
-   `.sum`, the pin is not reproducible.
-
-3. **PowerShell strips the `.mod` extension** from an unquoted `-modfile=golangci-lint.mod`
-   argument, producing `file does not have .mod extension`. The flag must be quoted:
+1. **PowerShell strips the `.mod` extension** from an unquoted `-modfile=golangci-lint.mod`
+   argument, splitting it into `-modfile=golangci-lint` and `.mod`. This surfaces as
+   `file does not have .mod extension` from `go get`, or as
+   `'go mod init' accepts at most one argument` from `go mod init` (the stray `.mod`
+   becomes a second positional argument). The flag must be quoted in PowerShell:
    `go tool "-modfile=golangci-lint.mod" golangci-lint run ./...`. The pipeline runner is a
-   Go program using `os/exec` and is unaffected, but README examples that a user might
-   paste into PowerShell must show the quoted form.
+   Go program using `os/exec` and is unaffected, but README examples a user might paste
+   into PowerShell must show the quoted form.
+
+2. **Setup commands** (run once when building the starter kit, not by template users):
+
+   ```
+   go mod init -modfile=golangci-lint.mod github.com/your-org/new-application-name/golangci-lint
+   go get -tool -modfile=golangci-lint.mod github.com/golangci/golangci-lint/v2@v2.13.1
+   ```
+
+   Verified working on Go 1.26.7. `go mod init -modfile=...` is supported — quote the flag
+   if running it from PowerShell (see note 1).
+
+3. **Both `golangci-lint.mod` and `golangci-lint.sum` must be committed.** The `require`
+   graph in the modfile is what selects versions; the `.sum` records integrity hashes.
+   Without the `.sum`, builds must re-resolve hashes and lose verification against
+   tampering, so both belong in version control.
 
 4. **The first run compiles golangci-lint from source** and is slow (order of minutes).
    Subsequent runs hit Go's build cache and are fast. The README should set this
@@ -228,8 +236,17 @@ accepted: "did the pipeline pass" and "is my working tree clean" become separate
 questions. Because formatting is applied before step 2, `lint` never reports a gofumpt
 violation — they have already been fixed.
 
-There is no read-only variant of the pipeline. There is no CI to need one, and the README
-notes that skipping step 1 produces one.
+There is no read-only variant of the pipeline, because there is no CI to need one.
+
+Should one be wanted later, formatting would still be *verified* rather than silently
+skipped. Verified against golangci-lint v2.13.1: `golangci-lint run` reports configured
+formatters' violations as ordinary issues (`File is not properly formatted (gofumpt)`,
+exit 1) even though it does not rewrite files. So running steps 2–5 and omitting step 1
+is a complete read-only gate. `golangci-lint fmt --diff ./...` is the other option — it
+prints a unified diff, exits 1 when changes are needed, and leaves files untouched.
+
+The runner deliberately offers no single "everything except format" command; invoking the
+individual steps covers it, and adding a mode nothing currently uses would be speculative.
 
 ### Runner behaviour
 
@@ -240,8 +257,12 @@ notes that skipping step 1 produces one.
   so long-running steps show progress.
 - The runner prints a short banner per step (e.g. `==> lint`) so failures are attributable
   when reading scrollback.
-- Invoked with an argument, it runs only that named step. An unrecognized step name is an
-  error listing the valid names, exit non-zero.
+- Invoked with an argument, it runs only that named step, with one exception: **`e2e`
+  runs `build` first.** Otherwise `go run ./tools/check e2e` would test whatever stale
+  binary happens to be in `bin/`, and could report a pass for source that no longer
+  compiles or that produces different output. Detecting only the *missing*-binary case
+  does not catch this. `build` is cheap and incremental, so the cost is negligible.
+- An unrecognized step name is an error listing the valid names, exit non-zero.
 - The binary name gets a `.exe` suffix when `runtime.GOOS == "windows"`.
 - The runner uses only the standard library (`os`, `os/exec`, `runtime`), so it adds no
   dependency to `go.mod`.
@@ -250,7 +271,16 @@ notes that skipping step 1 produces one.
 
 - **`hello-world` success:** prints `Hello, world!` to stdout, exit 0.
 - **`--version`:** cobra prints the version, exit 0.
-- **Unknown command or flag:** cobra prints an error and usage to stderr, exit non-zero.
+- **Unknown command or flag:** cobra prints to stderr and exits 1. The two cases differ,
+  verified against cobra v1.10.2 — stdout is empty in both:
+
+  | Input | stderr |
+  | --- | --- |
+  | unknown command | `Error: unknown command "x" for "app"` + `Run 'app --help' for usage.` — **no usage block** |
+  | unknown flag | `Error: unknown flag: --x` + the **full usage block** |
+
+  No custom cobra output configuration is needed; the defaults already send both to
+  stderr. The e2e test asserts on the unknown-*command* case only (see Testing).
 - **`main.go`:** on error from `cli.Execute()`, exits 1. cobra has already printed the
   message, so `main` does not print it again.
 - **E2E with no built binary:** the test fails with an actionable message naming the fix
@@ -269,10 +299,10 @@ notes that skipping step 1 produces one.
 via `go test ./...`, which is fast and passes on a clean checkout because the e2e build
 tag excludes the e2e package.
 
-`-race` is deliberately not enabled. On Windows it requires `CGO_ENABLED=1` and a working
-C toolchain, which would break the "`go` is the only prerequisite" property that shapes
-this entire design. A hello-world CLI has no concurrency for it to find. The README notes
-how to add it.
+`-race` is deliberately not enabled. On `windows/amd64` it requires `CGO_ENABLED=1` and a
+working C toolchain, which would break the "`go` is the only prerequisite" property that
+shapes this entire design; on `windows/arm64` the race detector is not supported at all. A
+hello-world CLI has no concurrency for it to find. The README notes how to add it.
 
 ### E2E tests
 
@@ -292,8 +322,15 @@ environment variable indirection.
 Two tests, chosen as **exemplars rather than for coverage**. Their purpose is to show a
 template user where and how to add tests:
 
-1. `hello-world` → stdout is `Hello, world!`, exit code 0.
-2. an unknown command → non-zero exit code, usage/error text on stderr.
+1. `hello-world` → stdout is exactly `Hello, world!\n`, exit code 0.
+2. `bogus` (an unknown command) → exit code 1, stderr *contains* `unknown command`,
+   stdout empty.
+
+Test 2 asserts a substring rather than cobra's exact stderr text, and uses the unknown-
+*command* case rather than unknown-*flag*, because the command case produces a short help
+hint with no usage block — a stable assertion that will not break when subcommands or
+flags are added. Asserting the full usage block (which the unknown-flag case emits) would
+make the test fail every time the template user adds a command.
 
 Together they cover the two shapes an e2e assertion takes: the success path via stdout,
 and the failure path via stderr and exit code.
@@ -324,10 +361,17 @@ starter kits. It appears in:
 - `go.mod` — the `module` path
 - `golangci-lint.mod` — the `module` path
 - `cmd/new-application-name/` — the directory name
+- `cmd/new-application-name/main.go` — the **import** of `.../internal/cli`
+- `internal/cli/helloworld.go` — the **import** of `.../internal/commands`
+- `internal/cli/root.go` — the root command's `Use` field
 - `tools/check/main.go` — the `-o bin/...` output name
 - `test/e2e/cli_test.go` — the binary path being executed
-- `internal/cli/root.go` — the root command's `Use` field
-- `README.md` — the title and references
+- `README.md` — the title, references, and the `-ldflags` example path
+
+The import paths matter: renaming the module without updating them leaves the starter kit
+uncompilable, so the README's "Starting a new app" list must include them. A
+project-wide find-and-replace of `new-application-name` covers every entry above, and the
+README should recommend exactly that rather than a manual file-by-file walk.
 
 `hello-world` remains the example subcommand name and is independent of the application
 name, matching `npm-command`. Replacing it is left to the developer when they add real

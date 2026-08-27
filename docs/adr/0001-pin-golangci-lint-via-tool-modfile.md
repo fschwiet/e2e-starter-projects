@@ -25,7 +25,7 @@ The first pipeline run compiles golangci-lint from source and takes minutes; thi
 calling out in the README so users do not assume a hang. The invocation is wordier than a
 bare `golangci-lint`, which the pipeline runner hides.
 
-Note that `go mod init -modfile=... <path>` does not actually work in Go 1.26 despite
-golangci-lint's docs presenting it as the setup step — the modfile must be hand-written
-before `go get -tool -modfile=…`. This only affects maintaining the starter kit, since the
-file is committed.
+One Windows gotcha, since it produces confusing errors: PowerShell splits an unquoted
+`-modfile=golangci-lint.mod` argument at the extension, yielding either
+`file does not have .mod extension` or `'go mod init' accepts at most one argument`. Quote
+the flag. The pipeline runner shells out via `os/exec` and is unaffected.
