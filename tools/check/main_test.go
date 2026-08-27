@@ -5,22 +5,13 @@ import (
 	"testing"
 )
 
-func stepNamesOf(steps []step) []string {
-	names := make([]string, 0, len(steps))
-	for _, s := range steps {
-		names = append(names, s.name)
-	}
-
-	return names
-}
-
 func TestSelectStepsWithNoArgsRunsWholePipeline(t *testing.T) {
 	steps, err := selectSteps(nil)
 	if err != nil {
 		t.Fatalf("selectSteps(nil) returned error: %v", err)
 	}
 
-	got := strings.Join(stepNamesOf(steps), ",")
+	got := strings.Join(stepNames(steps), ",")
 	want := "format,lint,unit,build,e2e"
 
 	if got != want {
@@ -34,7 +25,7 @@ func TestSelectStepsWithOneNameRunsOnlyThatStep(t *testing.T) {
 		t.Fatalf("selectSteps([lint]) returned error: %v", err)
 	}
 
-	got := strings.Join(stepNamesOf(steps), ",")
+	got := strings.Join(stepNames(steps), ",")
 	if want := "lint"; got != want {
 		t.Errorf("step names = %q, want %q", got, want)
 	}
@@ -48,7 +39,7 @@ func TestSelectStepsBuildsBeforeE2E(t *testing.T) {
 		t.Fatalf("selectSteps([e2e]) returned error: %v", err)
 	}
 
-	got := strings.Join(stepNamesOf(steps), ",")
+	got := strings.Join(stepNames(steps), ",")
 	if want := "build,e2e"; got != want {
 		t.Errorf("step names = %q, want %q", got, want)
 	}
