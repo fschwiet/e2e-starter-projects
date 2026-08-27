@@ -1,0 +1,7 @@
+# Build output from `go run ./tools/check build`
+/bin/
+
+# Go build and test artifacts
+*.exe
+*.test
+*.out
