@@ -165,11 +165,18 @@ hard way:
 
    ```
    go mod init -modfile=golangci-lint.mod github.com/your-org/new-application-name/golangci-lint
-   go get -tool -modfile=golangci-lint.mod github.com/golangci/golangci-lint/v2@v2.13.1
+   go get -tool -modfile=golangci-lint.mod github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.1
    ```
 
    Verified working on Go 1.26.7. `go mod init -modfile=...` is supported — quote the flag
    if running it from PowerShell (see note 1).
+
+   The `go get -tool` argument must be the **`/cmd/golangci-lint` package path**, not the
+   module root. Passing the module root (`github.com/golangci/golangci-lint/v2@v2.13.1`)
+   prints `cannot find module providing package …` but **still exits 0**, writing a `tool`
+   directive that points at a non-main package. The breakage only surfaces later, when
+   `go tool … golangci-lint run` fails with the misleading
+   `no required module provides package github.com/golangci/golangci-lint/v2`.
 
 3. **Both `golangci-lint.mod` and `golangci-lint.sum` must be committed.** The `require`
    graph in the modfile is what selects versions; the `.sum` records integrity hashes.
