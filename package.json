@@ -21,6 +21,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test:unit": "vitest run",
+    "test:nondeterministic": "vitest run --config vitest.nondeterministic.config.ts",
     "test:e2e": "vitest run --config vitest.e2e.config.ts",
     "test": "pnpm test:unit && pnpm build && pnpm test:e2e",
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test"

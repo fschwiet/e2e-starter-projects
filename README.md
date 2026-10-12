@@ -3,6 +3,8 @@
 A starter template for building npm CLI applications with TypeScript, ESM, commander,
 tsup, ESLint, Prettier, Vitest unit tests, and execa-driven end-to-end tests.
 
+EDIT: this branch exists to test some tooling I'm working on for dealing with nondeterministic tests and is not the droid you're looking for.
+
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) v18+
