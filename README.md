@@ -5,7 +5,7 @@ end-to-end tests, with a local verification pipeline that needs nothing installe
 
 ## Prerequisites
 
-- [Go](https://go.dev/dl/) 1.26 or newer.
+- [Go](https://go.dev/dl/) 1.27 or newer.
 
 That is the entire list. golangci-lint is pinned in `golangci-lint.mod` and compiled on
 demand by the Go toolchain — there is nothing else to install.
