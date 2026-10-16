@@ -1,6 +1,6 @@
 ## Dev helper scripts (`scripts/`)
 
-These PowerShell scripts wrap the environment checks and emulator lifecycle that recur in the development loop. Use them to avoid permission denials on the more general underlying commands.
+These PowerShell scripts wrap the environment checks and emulator lifecycle that recur in the development loop.
 
 | Script                    | Purpose                                                                                                | Exit codes                                              |
 | ------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
@@ -23,7 +23,7 @@ Stop the emulator when finished with `./scripts/stop-emulator.ps1`.
 
 ## Verification pipeline
 
-Standard Gradle wrapper tasks (already allowlisted as `./gradlew *`).
+Standard Gradle wrapper tasks.
 
 Individual commands:
 
