@@ -1,7 +1,7 @@
 # Working in this repo
 
-A Go CLI starter kit. `go` is the only prerequisite — golangci-lint is pinned in
-`golangci-lint.mod` and compiled on demand. Do not install tooling.
+A Go CLI. golangci-lint is pinned in `golangci-lint.mod` and compiled on demand by the
+Go toolchain.
 
 ## Verify a change
 
@@ -39,11 +39,10 @@ The first run compiles golangci-lint from source and takes minutes. It is not hu
   result.
 - `cmd/new-application-name/` — the `main` package. Thin.
 - `test/e2e/` — tests the built binary. Tagged `//go:build e2e`.
-- `tools/check/` — the pipeline runner. Standard library only; it must add nothing to
-  `go.mod`.
+- `tools/check/` — the pipeline runner.
 
 Keep logic out of `internal/cli`. That split is what makes commands testable without
-constructing a cobra command, and it is the pattern this starter kit exists to show.
+constructing a cobra command.
 
 ## Gotchas
 
@@ -52,10 +51,3 @@ constructing a cobra command, and it is the pattern this starter kit exists to s
 - Invoking golangci-lint directly from PowerShell needs the flag quoted, or the `.mod`
   extension is split off the argument:
   `go tool "-modfile=golangci-lint.mod" golangci-lint run ./...`
-- If errcheck flags an unchecked error, handle the error. Do not add an exclusion to
-  `.golangci.yml`.
-
-## Design decisions
-
-`docs/adr/` records why the non-obvious choices were made — the pinned tool modfile, the
-Go pipeline runner, and the mutating format step. Read before changing any of them.

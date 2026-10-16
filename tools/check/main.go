@@ -5,10 +5,7 @@
 //	go run ./tools/check          # every step, in order, stopping at the first failure
 //	go run ./tools/check <step>   # a single step
 //
-// Step 1 (format) rewrites source files. See ADR-0003.
-//
-// This is a plain Go program rather than a Makefile or Taskfile so that the Go
-// toolchain remains the only prerequisite. See ADR-0002.
+// Step 1 (format) rewrites source files.
 package main
 
 import (
@@ -31,7 +28,7 @@ type step struct {
 }
 
 // golangciLint builds an argument list that invokes the linter through its pinned
-// tool modfile, so no global install is required. See ADR-0001.
+// tool modfile, so no global install is required.
 func golangciLint(args ...string) []string {
 	base := []string{"go", "tool", "-modfile=golangci-lint.mod", "golangci-lint"}
 

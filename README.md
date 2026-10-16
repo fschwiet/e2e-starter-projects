@@ -105,14 +105,13 @@ Replace it when you add real commands.
 go build -ldflags "-X github.com/your-org/new-application-name/internal/cli.version=1.2.3" ./cmd/new-application-name
 ```
 
-The pipeline does not set it. There is deliberately no e2e test asserting the version —
-that test would fail on every version bump.
+The pipeline does not set it.
 
 ## Adding the race detector
 
 Not enabled by default: on `windows/amd64` it needs `CGO_ENABLED=1` and a C toolchain,
-which would break the "only Go required" promise, and it is unsupported on
-`windows/arm64`. To enable it, change the `unit` step in `tools/check/main.go` to:
+and it is unsupported on `windows/arm64`. To enable it, change the `unit` step in
+`tools/check/main.go` to:
 
 ```go
 {name: "unit", args: []string{"go", "test", "-race", "./..."}},

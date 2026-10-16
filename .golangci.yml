@@ -14,5 +14,4 @@ formatters:
     - goimports
 
 # Linters are golangci-lint's defaults: errcheck, govet, ineffassign, staticcheck,
-# unused. Deliberately not expanded — add linters as the project matures rather
-# than starting by deleting ones you did not choose.
+# unused.
